@@ -15,13 +15,6 @@ jobTitle.addEventListener('change', (e) => {
 });
 
 
-
-/**
- * Pro Tip:
- * The selected attribute can determine which option element is displayed in the select field.
- * The hidden attribute can prevent option elements from being displayed in the drop down menu.
- */
-
 const design = document.querySelector('#design');
 const color = document.querySelector('#color');
 color.disabled = true;
@@ -44,3 +37,23 @@ design.addEventListener('change', (e) => {
         }
     }
 });
+
+
+const activities = document.querySelector('#activities');
+const totalDisplay = document.querySelector('#activities-cost')
+let totalCost = 0;
+
+activities.addEventListener('change', e => {
+    const dataCost = e.target.getAttribute('data-cost');
+    const dataCostNum = +dataCost;
+    if (e.target.checked) {
+        totalCost += dataCostNum;
+    } else {
+        totalCost -= dataCostNum;
+    };
+    totalDisplay.innerHTML = `Total: $${totalCost}`
+});
+
+
+
+
