@@ -1,14 +1,13 @@
-// Making the "name" <input> the focus when page is loaded.
- 
+/*** BASIC INFO ***
+ * Making the "name" <input> the focus when page is loaded.
+ * Hiding the "Other job role?" <input> and only displaying if "Other" <option> 
+   is selected from the "Job Role" dropdown menu.
+ */
 const name = document.querySelector('#name');
-name.focus();
-
-// Hiding the "Other job role?" <input> and only displaying if "Other" 
-// <option> is selected from the "Job Role" dropdown menu.
- 
 const otherJobRole = document.querySelector('#other-job-role')
 const jobTitle = document.querySelector('#title');
 
+name.focus();
 otherJobRole.style.display = 'none';
 
 jobTitle.addEventListener('change', (e) => {
@@ -19,7 +18,7 @@ jobTitle.addEventListener('change', (e) => {
     };
 });
 
-/**
+/*** T-SHIRT INFO ***
  * First, the "Color" dropdown menu is disabled until an option is 
    selected from the "Design" dropdown menu.
  * The available color options are limited depending on which design is 
@@ -32,14 +31,16 @@ color.disabled = true;
 design.addEventListener('change', (e) => {
     color.disabled = false;
     const value = e.target.value;
-    const dataPuns = document.querySelectorAll('[data-theme="js puns"]')
-    const dataHeart = document.querySelectorAll('[data-theme="heart js"]')
+    const dataPuns = document.querySelectorAll('[data-theme="js puns"]');
+    const dataHeart = document.querySelectorAll('[data-theme="heart js"]');
     if(value === 'js puns') {
+        color.value = "cornflowerblue";
         for(let i=0; i<dataHeart.length;i++) {
             dataHeart[i].hidden = true;
             dataPuns[i].hidden = false;
         }
     } else if (value === 'heart js') {
+        color.value = "tomato";
         for(let i=0; i<dataPuns.length;i++) {
             dataPuns[i].hidden = true;
             dataHeart[i].hidden = false;
@@ -47,11 +48,12 @@ design.addEventListener('change', (e) => {
     }
 });
 
-//The totalcost displayed is updated according to how many workshop checkboxes the 
-//user selects. 
-
+/***REGISTER FOR ACTIVITIES***
+ * The totalcost displayed is updated according to how many workshop checkboxes the 
+   user selects. 
+ */
 const activities = document.querySelector('#activities');
-const totalDisplay = document.querySelector('#activities-cost')
+    const totalDisplay = document.querySelector('#activities-cost')
 let totalCost = 0;
 
 activities.addEventListener('change', e => {
@@ -66,7 +68,47 @@ activities.addEventListener('change', e => {
 });
 
 /**
- * Make the "Credit Card" option the default display option when 
+ * Disables selecting conflicting Workshops in the "Register for Activities" section
+ */
+document.querySelector('#activities-box').addEventListener('change', e => {
+    const clicked = e.target;
+    const clickedType = clicked.getAttribute('data-day-and-time');
+    
+    for(let i=0;i<checkboxes.length;i++){
+      const checkboxType = checkboxes[i].getAttribute('data-day-and-time');
+      if(clickedType === checkboxType && clicked !== checkboxes[i]) {
+        if (clicked.checked) {
+          checkboxes[i].disabled = true;
+          checkboxes[i].parentElement.classList.add('disabled')
+  
+        } else {
+          checkboxes[i].disabled = false;
+          checkboxes[i].parentElement.classList.remove('disabled')
+  
+        };
+      };
+    }; 
+  });
+
+
+/**
+ * Updates styling to better visibility when navigating the activities field
+ */
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+for(let i=0; i<checkboxes.length; i++) {
+    checkboxes[i].addEventListener('focus', (e) => {
+        const label = checkboxes[i].parentElement;
+        label.classList.add('focus') 
+    });
+    checkboxes[i].addEventListener('blur', (e) => {
+        const label = checkboxes[i].parentElement;
+        label.classList.remove('focus')
+    });
+};
+
+/*** PAYMENT INFO ***
+ * Makes the "Credit Card" option the default display option when 
    loading the page by removing the first option "Select payment method"
  * Since "Credit Card" option is default, "Expiration Date", "Expiration
    year", "Card Number", "Zip Code", and "CVV" are displayed.
@@ -107,10 +149,9 @@ payment.addEventListener('change', e => {
 
 
 
-/** FORM VALIDATION
- * 
+/*** FORM VALIDATION ***
+ * Variables used in form validation
  */
-
 const form = document.querySelector('form');
 const email = document.querySelector('#email');
 const ccNum = document.querySelector('#cc-num');
@@ -120,7 +161,6 @@ const cvvNum = document.querySelector('#cvv');
 /**
  * HELPER FUNCTIONS for updating Error Messages and styling
  */
-
 function validationPass (element) {
     element.parentElement.classList.add('valid');
     element.parentElement.classList.remove('not-valid');
@@ -134,7 +174,7 @@ function validationFail (element) {
 };
 
 /**
- * VALIDATING FUNCTIONS for validating each of the validated fields
+ * VALIDATING FUNCTIONS for validating each of the required fields
  */
 function nameValidator() {
     const nameIsValid = /^[a-zA-Z]+ ?[a-zA-Z]*? ?[a-zA-Z]*?$/.test(name.value);
@@ -166,9 +206,98 @@ function cvvValidator() {
     return cvvIsValid;
 };
 
+/**
+ * NAME AND EMAIL "BLUR" VALIDATOR
+ * Both the name input and the email input get validated as soon as the user leaves focus
+   away from the input node via a "blur" eventListener.
+ * In the name input, if the input field is left blank or if no letters are detected, an 
+   error message will display.
+ */
+name.addEventListener('blur', e => {
+    if (name.value.length === 0) {
+        name.parentElement.classList.add('not-valid');
+        name.parentElement.classList.remove('valid');
+        name.parentElement.lastElementChild.style.display = 'block';
+    } else {
+        name.parentElement.classList.add('valid');
+        name.parentElement.classList.remove('not-valid');
+        name.parentElement.lastElementChild.style.display = 'none';
+        nameValidator();
+        if(!nameValidator()) {
+            e.preventDefault();
+            name.parentElement.classList.add('not-valid');
+            name.parentElement.classList.remove('valid');
+            name.parentElement.lastElementChild.style.display = 'block';
+        } else {
+            name.parentElement.classList.add('valid');
+            name.parentElement.classList.remove('not-valid');
+            name.parentElement.lastElementChild.style.display = 'none';
+        };
+    };  
+});
 
 /**
- * FORM VALIDATION EventListener
+ * EMAIL VALIDATOR
+ * The email field in this form has its own separate validator which listens for a
+   "blur" event. 
+ * First, a message is saved to a "emailReminder" variable to display if the email
+   input field is left blank. Then, it is inserted as the last child of the parent
+   element "label". Lastly, it is hidden by applying ".style.display = 'none';"
+ * Once the "blur" is detected by the eventListener, the validator will test whether 
+   the input field is left blank. 
+     * If input field is left blank, the callback function will change the display 
+       value of the inserted "emailReminder" to "block", the second-to-last child 
+       of the label element ("Email address must be formatted correctly" message) 
+       to "none", and change the parentElement's classList to "not-valid"
+     * If the input field is not blank, the callback function will remove the 
+       "not-valid" class from the parentElement (label) and hide the "emailReminder"
+       message
+ * Next, the eventlistener tests whether the email format is valid using the 
+   "emailValidator" function. 
+     * If the email validation fails, the parentElement gets the "not-valid" class added
+       and the "valid" class removed. Also, the second-to-last child of the parent "label"
+       element gets displayed ("Email address must be formatted correctly" message).
+     * If the email validation passes, the the parentElement gets the "valid" class added
+       and the "not-valid" class removed, and the second-to-last child element gets hidden.
+ */
+const emailReminder = 'Email address is required';
+
+email.parentElement.insertAdjacentHTML(
+    'beforeend',
+    `<p>${emailReminder}</p>`  
+);
+
+email.parentElement.lastElementChild.style.display = 'none';
+
+email.addEventListener('blur', e => {
+    if (email.value.length === 0) {
+        email.parentElement.classList.add('not-valid');
+        email.parentElement.lastElementChild.style.display = 'block';
+        email.parentElement.lastElementChild.previousElementSibling.style.display = 'none';
+    } else {
+        email.parentElement.classList.remove('not-valid');
+        email.parentElement.lastElementChild.style.display = 'none';
+        emailValidator();
+        if(!emailValidator()) {
+            e.preventDefault();
+            email.parentElement.classList.add('not-valid');
+            email.parentElement.classList.remove('valid');
+            email.parentElement.lastElementChild.previousElementSibling.style.display = 'block';
+        } else {
+            email.parentElement.classList.add('valid');
+            email.parentElement.classList.remove('not-valid');
+            email.parentElement.lastElementChild.previousElementSibling.style.display = 'none';
+        };
+    };  
+});
+
+/**
+ * FORM SUBMIT VALIDATION
+ * The form listens for the submit event and calls each of the remaining validation functions
+   and either calls the "validationFail()" function, or the "validationPass()" function with
+   each field.
+   "activitiesValidator()" gets personalized attention because the changes in styling apply 
+   to the "#activities" element itself, and not its parentElement.
  */
 form.addEventListener('submit', e => {
     
@@ -180,13 +309,25 @@ form.addEventListener('submit', e => {
         validationPass(name);
     };
 
-    emailValidator();
-    if(!emailValidator()) {
-        e.preventDefault();
-        validationFail(email);
+    if (email.value.length === 0) {
+        email.parentElement.classList.add('not-valid');
+        email.parentElement.lastElementChild.style.display = 'block';
+        email.parentElement.lastElementChild.previousElementSibling.style.display = 'none';
     } else {
-        validationPass(email);
-    };
+        email.parentElement.classList.remove('not-valid');
+        email.parentElement.lastElementChild.style.display = 'none';
+        emailValidator();
+        if(!emailValidator()) {
+            e.preventDefault();
+            email.parentElement.classList.add('not-valid');
+            email.parentElement.classList.remove('valid');
+            email.parentElement.lastElementChild.previousElementSibling.style.display = 'block';
+        } else {
+            email.parentElement.classList.add('valid');
+            email.parentElement.classList.remove('not-valid');
+            email.parentElement.lastElementChild.previousElementSibling.style.display = 'none';
+        };
+    };  
 
     activitiesValidator();
     if(!activitiesValidator()) {
@@ -229,21 +370,5 @@ form.addEventListener('submit', e => {
             validationPass(cvvNum);
         };
     };
-
 });
 
-/**
- * Updates styling to better visibility when navigating the activities field
- */
-const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-
-for(let i=0; i<checkboxes.length; i++) {
-    checkboxes[i].addEventListener('focus', (e) => {
-        const label = checkboxes[i].parentElement;
-        label.classList.add('focus') 
-    });
-    checkboxes[i].addEventListener('blur', (e) => {
-        const label = checkboxes[i].parentElement;
-        label.classList.remove('focus')
-    });
-};
