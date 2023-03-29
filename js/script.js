@@ -209,12 +209,12 @@ function cvvValidator() {
 
 /**
  * NAME AND EMAIL "BLUR" VALIDATOR
- * Both the name input and the email input get validated as soon as the user leaves focus
-   away from the input node via a "blur" eventListener.
+ * Both the name input and the email input get validated instantly via a "blur" 
+   eventListener.
  * In the name input, if the input field is left blank or if no letters are detected, an 
    error message will display.
  */
-name.addEventListener('blur', e => {
+name.addEventListener('keyup', e => {
     if (name.value.length === 0) {
         name.parentElement.classList.add('not-valid');
         name.parentElement.classList.remove('valid');
@@ -240,11 +240,11 @@ name.addEventListener('blur', e => {
 /**
  * EMAIL VALIDATOR
  * The email field in this form has its own separate validator which listens for a
-   "blur" event. 
+   "keyup" event, thus validating the input immediately as the user types
  * First, a message is saved to a "emailReminder" variable to display if the email
    input field is left blank. Then, it is inserted as the last child of the parent
    element "label". Lastly, it is hidden by applying ".style.display = 'none';"
- * Once the "blur" is detected by the eventListener, the validator will test whether 
+ * Once the "keyup" is detected by the eventListener, the validator will test whether 
    the input field is left blank. 
      * If input field is left blank, the callback function will change the display 
        value of the inserted "emailReminder" to "block", the second-to-last child 
@@ -254,7 +254,7 @@ name.addEventListener('blur', e => {
        "not-valid" class from the parentElement (label) and hide the "emailReminder"
        message
  * Next, the eventlistener tests whether the email format is valid using the 
-   "emailValidator" function. 
+   "emailValidator" function. /
      * If the email validation fails, the parentElement gets the "not-valid" class added
        and the "valid" class removed. Also, the second-to-last child of the parent "label"
        element gets displayed ("Email address must be formatted correctly" message).
@@ -270,7 +270,7 @@ email.parentElement.insertAdjacentHTML(
 
 email.parentElement.lastElementChild.style.display = 'none';
 
-email.addEventListener('blur', e => {
+email.addEventListener('keyup', e => {
     if (email.value.length === 0) {
         email.parentElement.classList.add('not-valid');
         email.parentElement.lastElementChild.style.display = 'block';
