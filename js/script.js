@@ -149,7 +149,8 @@ payment.addEventListener('change', e => {
 
 
 
-/*** FORM VALIDATION ***
+/*** FORM VALIDATION ***\}"
+ * "
  * Variables used in form validation
  */
 const form = document.querySelector('form');
